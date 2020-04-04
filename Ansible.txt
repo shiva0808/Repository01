@@ -1,0 +1,472 @@
+Ansible
+atom IDE for ansible playbook development
+apm install linter-js-yaml		install linter-ja-yaml package for YAML validation from command prompt
+
+remote-sync			Plugin to Sync file from Atom IDE to server
+
+Settings
+Controller Machine : Where Ansible will be installed
+Tempalte Machine : A Template OS machine
+Target-x		: Target Machine effected by automation (X Represent node number)
+=======================================
+OS can be downloaded form osboxes.org, username/password can be fetched from VM image info section on the webpage
+Username: osboxes
+Password: osboxes.org
+
+
+Ansible installation steps
+yum install ansible
+
+Default inventory file
+/etc/ansible/hosts
+ansible_host = FQDN of server
+ansible_connection=ssh/winrm/localhost
+ansible_user = root/administrator
+ansible_ssh_pass/ansible_password	= Password of the server	
+
+Creating a test project
+mkdir test_project
+cat> inventory.txt
+target1 ansible_host=192.168.1.100 ssh_pass=osboxes.org
+save the file
+ansible target1 -m ping -i inventory.txt			this will run ansible command on target1 with module ping and inventoy inventory.txt file
+
+ansible configuration file
+/etc/ansible/ansible.cfg
+host_key_checking = False			which means host checking is set as false, means it will check remote host signature is present or not
+ 
+=========================================
+Inventory Definition
+web1 ansible_host=server1.company.com ansible_connection=ssh ansible_user=root ansible_ssh_pass=Password123!
+web2 ansible_host=server2.company.com ansible_connection=ssh ansible_user=root ansible_ssh_pass=Password123!
+web3 ansible_host=server3.company.com ansible_connection=ssh ansible_user=root ansible_ssh_pass=Password123!
+db1 ansible_host=server4.company.com ansible_connection=winrm ansible_user=administrator ansible_password=Password123!
+=========================================
+Group Definition
+[web_servers]
+web1
+web2
+web3
+
+[db_servers]
+db1
+===========================================
+Group of Group definition
+[web_servers]
+web1
+web2
+web3
+
+[db_servers]
+db1
+
+[all_servers:children]
+web_servers
+db_servers
+=============================================
+YAML
+Key Value Pair definition in YAML
+Key1: Value1
+Key2: Value2
+
+Array/List
+-	repesent element of array
+Fruits:
+	- apple
+	- banana
+
+Dictionary: represent propery of object
+Banana:
+	calorie: 10
+	fat: 20
+	carbs: 20
+
+A List can have a dictionary
+Fruit:
+	- Banana:
+		calorie: 10
+		fat: 20
+		carb: 30
+	- apple:
+		calorie: 20
+		fat: 30
+		carb: 40
+
+Dictionary are unordered while list(array) are ordered
+
+=============================================
+Ansible Module list
+ansible-doc -l
+
+===================================Chapter: Running Ansible Playbook
+Running Ansible Playbooks
+there are two ways to run ansible commands
+1. ansible command	2. Ansible Playbooks
+Ansible commands
+ansible all -a "/sbin/reboot"
+ansible <hosts> -m module
+ansible target1 -m ping
+
+Ansible playbooks
+ansible-playbook playbook-webserver.yaml
+
+Sample YAML File
+cat playbook-pingtest.yaml
+-
+	name: test connectivity with servers
+	hosts: all
+	tasks:
+		-	name:	Ping Test
+			ping:
+
+Executing a playbook
+ansible-playbook playbook-pingtest.yaml -i inventory.txt
+
+==============================================
+Using Atom IDE
+Project Folder and Sub Folder name has to be same on server and IDE
+================================New Chapter Ansible Playbooks
+Sample Playbooks
+
+-
+    name: 'Execute a date command on localhost'
+    hosts: localhost
+    tasks:
+        -
+            name: 'Execute a date command'
+            command: date
+######################Another Sample
+-
+    name: 'Execute a command to display hosts file on localhost'
+    hosts: localhost
+    tasks:
+        -
+            name: 'Execute a command to display hosts file'
+            command: cat /etc/hosts
+#######################Run Two Command
+-
+    name: 'Execute two commands on localhost'
+    hosts: localhost
+    tasks:
+        -
+            name: 'Execute a date command'
+            command: date
+        -
+            name: 'Execute a command to display hosts file'
+            command: cat /etc/hosts
+########################Example with two play in one playbook
+-
+    name: 'Execute command to display date on web_node1'
+    hosts: web_node1
+    tasks:
+        -
+            name: 'Execute a date command'
+            command: date
+-
+    name: 'Execute a command to display hosts file contents on web_node2'
+    hosts: web_node2
+    tasks:
+        -
+            name: 'Execute a command to display hosts file'
+            command: cat /etc/hosts
+###########################a sample playbook to stop server/db and restart servers and the start db/servers
+-
+    name: 'Stop the web services on web server nodes'
+    hosts: web_nodes
+    tasks:
+        -
+            name: 'Stop the web services on web server nodes'
+            command: 'service httpd stop'
+-
+    name: 'Shutdown the database services on db server nodes'
+    hosts: db_nodes
+    tasks:
+        -
+            name: 'Shutdown the database services on db server nodes'
+            command: 'service mysql stop'
+-
+    name: 'Restart all servers (web and db) at once'
+    hosts: all_nodes
+    tasks:
+        -
+            name: 'Restart all servers (web and db) at once'
+            command: '/sbin/shutdown -r'
+-
+    name: 'Start the database services on db server nodes'
+    hosts: db_nodes
+    tasks:
+        -
+            name: 'Start the database services on db server nodes'
+            command: 'service mysql start'
+-
+    name: 'Start the web services on web server nodes'
+    hosts: web_nodes
+    tasks:
+        -
+            name: 'Start the web services on web server nodes'
+            command: 'service httpd start'
+--------------------------------
+=========================================New Chapter ANSIBLE MODULES
+Ansible modules can be found online at ansible documentation
+https://docs.ansible.com/
+command module		https://docs.ansible.com/ansible/latest/modules/command_module.html#command-module
+script module		https://docs.ansible.com/ansible/latest/modules/script_module.html#script-module
+Service Module      https://docs.ansible.com/ansible/latest/modules/service_module.html
+User Module			https://docs.ansible.com/ansible/latest/modules/user_module.html
+lineinfile module	https://docs.ansible.com/ansible/latest/modules/lineinfile_module.html
+
+####################################below play doing multiple jobs
+1. Update file with name server
+2  Create a new user
+3. Execute a script
+4. start httpd service
+
+-
+    name: 'Execute a script on all web server nodes'
+    hosts: web_nodes
+    tasks:
+        - 
+            name: 'name server add'
+            lineinfile:
+                path: /etc/resolv.conf
+                line: nameserver 10.1.250.10
+		-
+            name: 'Add Webuser'
+            user:
+                name: web_user
+                uid: 1040
+                group: developers
+        -
+            name: 'Execute a script on all web server nodes'
+            script: /tmp/install_script.sh
+		-
+			name: 'start httpd services'
+            service:
+                name: https
+                state: started
+=========================================New Chapter Ansible Variables================
+Ansible Variables
+Note in case if variable is used in statement then no need of '' ex {{var1}} however if variable are alone then they must be used inside '' ex '{{var1}}'
+using variable
+
+inventory file sample
+localhost ansible_connection=localhost nameserver_ip=10.1.250.10
+
+Playbooks
+-
+    name: 'Update nameserver entry into resolv.conf file on localhost'
+    hosts: localhost
+    tasks:
+        -
+            name: 'Update nameserver entry into resolv.conf file'
+            lineinfile:
+                path: /etc/resolv.conf
+                line: 'nameserver {{nameserver_ip}}'		
+
+##################################veriable definition in playbook file
+-
+    hosts: localhost
+    vars:
+        car_model: 'BMW M3'
+        country_name: USA
+        title: 'Systems Engineer'
+    tasks:
+        -
+            command: 'echo "My car''s model is {{ car_model }}"'
+        -
+            command: 'echo "I live in the {{ country_name }}"'
+        -
+            command: 'echo "I work as a {{ title }}"'
+
+================================New chapter Conditions================
+Conditions in Ansible
+when: ansible_os_family == "Redhat" or ansible_os_family == "Suse"
+when: ansible_os_family == "Debian" and ansible_distribution_version ="16.04"
+
+to record output of command and finding string in registered result
+register: result
+when: result.stdout.find('down')=-1
+
+loop
+loop: "{{listname}}"
+
+#######################
+-
+	name: Check service is down
+	hosts: all_servers
+	tasks:
+		-
+			command: service httpd status
+			register: result
+		-
+			mail:
+				to: shiva.mailto@gmail.com
+				subject: service down
+				body: httpd service is down
+				when: result.stdout.find("down") != -1
+		
+
+#######################Playbook for running a commnd only when host matches fixed name
+-
+    name: 'Execute a script on all web server nodes'
+    hosts: all_servers
+    tasks:
+        -
+            service: 'name=mysql state=started'
+            when: ansible_host == 'server4.company.com'
+#####################To check variable age is greater or less than 18
+-
+    name: 'Am I an Adult or a Child?'
+    hosts: localhost
+    vars:
+        age: 25
+    tasks:
+        -
+            command: 'echo "I am a Child"'
+            when: age < 18
+        -
+            command: 'echo "I am an Adult"'
+            when: age >= 18
+
+##########################append line "nameserver 10.0.250.10" in /etc/resolv.conf file only when this line does not exist 
+-
+    name: 'Add name server entry if not already entered'
+    hosts: localhost
+    tasks:
+        -
+            shell: 'cat /etc/resolv.conf'
+            register: 'command_output'
+        -
+            shell: 'echo "nameserver 10.0.250.10" >> /etc/resolv.conf'
+            when: command_output.stdout.find("10.0.250.10") == -1
+
+===================================New Chapter Loops
+#########################################
+-
+	name: Install Softwares
+	host: all
+	vars:
+		packages:
+			- 
+				name: nginx
+				required: true
+			-
+				name: mysql
+				required: true
+			-
+				name: apache
+				required: false
+	tasks:
+		-
+			name: Install "{{item.name}}" on debian
+			apt:
+				name: "{{item.name}}"
+				state: present
+			when item.required=true
+			loop: "{{packages}}"
+
+#######################################
+-
+	name: Create Users
+	hosts: localhost
+	tasks:
+		-user: name='{{item}}' state=present
+		 loop:
+			-Joe
+			-George
+			-Ravi
+			-Mani
+
+-
+	name: create users with UID
+	hosts: localhost
+	taks:
+		-user: name='{{item.name}} uid='{{item.uid}}' state=present
+		 loop:
+			-name: kinan
+			 uid: 1010
+			-name: jajlan
+			 uid: 1011
+			-name: emaan
+			 uid: 1012
+			-name: sandeep
+			 uid: 1013
+#################################
+-
+    name: 'Print list of fruits'
+    hosts: localhost
+    vars:
+        fruits:
+            - Apple
+            - Banana
+            - Grapes
+            - Orange
+    tasks:
+        -
+            command: 'echo "{{item}}"'
+            with_items: '{{ fruits }}'
+			
+####################################
+-
+    name: 'Install required packages'
+    hosts: localhost
+    vars:
+        packages:
+            - httpd
+            - binutils
+            - glibc
+            - ksh
+            - libaio
+            - libXext
+            - gcc
+    tasks:
+        -
+            yum: 'name={{item}} state=present'
+            with_items: '{{packages}}'
+#######################################
+=========================================New Chapter : Roles
+Ansible Galaxy community for preconfigured roles
+Role can be created 
+Role can be imported from Galaxy community(in Current Roles directory)				ansible-galaxy install geerlingguy.mysql -p ./roles
+To list roles available in Ansible community										ansible-galaxy list		or	ansible-galaxy search mysql
+Default path for ansible roles														ansible-config dump| grep ROLE
+Role path can be changed from ansible.conf file 									roles_path=/etc/ansible/role
+Roles has below directories
+	-tasks
+	-var
+	-default
+	-handlers
+	-templates
+
+To create a role from scratch, use below command and it will automatically create directory structure, once directory strucuture is create code can be
+moved inside these directories.
+ansible-galaxy init mysql
+
+using a role(this will simply use mysql role)
+-
+	name: install mysql
+	hosts: localhost
+	roles:
+		-mysql																		role will be picked from default role directory
+
+======================================
+*By default winrm may not be available in windows machine hence needs to be setup
+*Only Linux can be ansible controller machine
+*Galaxy.ansible.com		This is community site for roles and other support on ansible
+
+*Pattern(pattern can be used in ansible using below method)
+hosts: host1,host2,host3
+hosts: Group1,host1
+hosts: *.company.com
+
+*Dynamic Inventory
+Dynamic inventory can be used(in case inventory data is not static)
+ansible-playbook -i inventory.py playbook.yml
+inventory.py will be a python script supplying inventory data to ansible
+many script are already available and can be used (ex for AWS deployment)
+
+*Custom Module
+Module can be developed in pyhton script, but in particular format(can be downloaded from Ansible developer guide)
+===========================================
+Sample Project for Learning(project hosted on)
+https://github.com/kodekloudhub/learning-app-ecommerce
