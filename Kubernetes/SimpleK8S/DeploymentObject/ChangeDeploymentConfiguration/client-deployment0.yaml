@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-deployment
+spec:
+  replicas: 1         #Code updated to increase number of pods to 1
+  selector:
+    matchLabels:
+      component: web
+  template:
+    metadata:
+      labels:
+        component: web
+    spec:
+      containers:
+        - name: client
+          image: stephengrider/multi-client   #updated image also
+          ports:
+            - container-Port: 3000      #This change in not possible in pod as object
+
+#this configuration will help check code on web
+#So configuration has been updated for port,image and replicas
+#for testing run
+#kubectl apply -f client-deployment0.yaml

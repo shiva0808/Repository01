@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: client-Pod
+  labels:
+    component: web
+spec:
+  containers:
+    - name: client
+      #image: stephengrider/multi-client
+      image: stephengrider/multi-worker   #updates the image and master will take care
+      ports:
+        -containerPort: 3000
+#how kubernetes will know that it has to update the same container in pod, based on the name
+#in metadata and image
