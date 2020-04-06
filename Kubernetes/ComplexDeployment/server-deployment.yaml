@@ -1,0 +1,45 @@
+apiVersion: app/v1
+kind: Deployment
+metadata:
+  name: server:deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      component: server     #here component property can be anything for defintion
+#     servercomponent: server         This will also work
+  template:
+    metadata:
+      labels:
+        component: server
+    spec:
+      containers:
+        - name: server
+          image: stephengrider/multi-server
+          ports:
+            - containerPort: 5000
+          env:                            #refer environment requirement in images
+            - name: REDIS_HOST
+              value: redis-cluster-ip-service
+            - name: REDIS_PORT
+              value: '6379'
+            - name: PGUSER
+              value: postgres
+            - name: PGHOST
+              value: postgres-cluster-ip-service
+            - name: PGPORT
+              value: '5432'
+            - name: PGDATABASE
+              value: postgres
+            - name: PGPASSWORD        #this contaier take postgres password in PGPASSWORD variable
+              valueFrom:
+                secretKeyRef:
+                  name: pgpassword        #name of secret
+                  key:  PGPASSWORD        #key in scret defenition
+
+
+#Generating Secret key
+#kubectl create secret generic pgpassword --from-literal PGPASSWORD=1234asdf
+#kubectl get secrets
+
+#environment variable with integer value to be encoded in single quotes

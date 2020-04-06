@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: client-deployment
+  name: client-Deployment
 spec:
-  replicas: 1         #This is the number of pods to be created
+  replicas: 3
   selector:
     matchLabels:
       component: web
@@ -16,5 +16,4 @@ spec:
         - name: client
           image: stephengrider/multi-client
           ports:
-            - container-Port: 3000
-#this code is for using deployment object method in kubernetes Deployment
+            - containerPort: 3000  

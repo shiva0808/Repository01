@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: worker
+  template:
+    metadata:
+      labels:
+        component: worker
+    spec:
+      containers:
+        - name: worker
+          image: stephengrider/multi-worker
+          env:
+            - name: REDIS_HOST
+              value: redis-cluster-ip-service
+            - name: REDIS_PORT
+              value: '6379'
+
+#as per architecture this deployment does not require any port or service as no outside node is
+#going to connect to it. so there is no definiton of port
+
+#As per architecture, worker is going to communicate with redis using env variable
+#on fix IP and port, in kuberneter IP will be service of redis and port
+
+#environment variable with integer value to be encoded in single quotes
