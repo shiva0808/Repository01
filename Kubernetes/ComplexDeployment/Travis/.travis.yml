@@ -1,0 +1,21 @@
+sudo: required
+services:
+  - docker
+before_install:
+  - curl https://sdk.cloud.google.com | bash > /dev/null
+  - source $HOME/google-cloud-sdk/path.bash.inc
+  - gcloud components update kubectl
+  - gcloud auth activate-service-account --key-file service-account.json
+  - gcloud config set project skilful-bern-214822     #this is project ID not name in GC
+  - gcloud config set compute/zone us-central1-a        #Cluster zone name
+  - gcloud container clusters get-credentials multi-cluster   #cluster name
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+#above line defines environment vars to login docker, these environment vars needs
+#to be added in travis project setting and will be picked
+  - docker build -t stephengrider/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+#  -docker run stephengrider/react-test npm run test -- --coverage
+  -docker run -e CI=true stephengrider/react-test npm run test
+
+#Download travis CI CLI to add encrypted file downloaded from Google Account Service
