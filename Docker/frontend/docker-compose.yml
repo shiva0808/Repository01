@@ -1,0 +1,18 @@
+version: '3'
+services:
+  web:
+    build:
+      context: .                 #this is the location where docker file is wrt to compose file
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - /app/node_modules       #this directory will not be mapped to host
+      - .:/app                #all directory except above directory will be mapped with host
+#  tests:
+#    build:
+#      contect: .
+#      dockerfile: Dockerfile.dev
+#    volumes:
+#      - /app/node_modules
+#      - .:/app
