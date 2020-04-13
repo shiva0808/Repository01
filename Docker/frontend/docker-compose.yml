@@ -11,7 +11,7 @@ services:
       - .:/app                #all directory except above directory will be mapped with host
 #  tests:
 #    build:
-#      contect: .
+#      context: .
 #      dockerfile: Dockerfile.dev
 #    volumes:
 #      - /app/node_modules
