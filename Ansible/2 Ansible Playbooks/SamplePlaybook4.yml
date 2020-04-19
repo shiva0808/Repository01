@@ -1,0 +1,20 @@
+-
+  name: Play 1
+  hosts: localhost
+  tasks:
+    - name: "Execute a Command date"
+      command: date
+    - name: "Display Resolv.conf file details"
+      command: cat /etc/resolv.conf
+    - name: "Display resolv.conf files"
+      command: cat resolv.conf chdir=/etc
+    - name: "Display resolv.conf contents"
+      command: mkdir /filder creates=/folder
+    - name: "Copy file from source to destination"
+      command: src=/source_file dest=/destination
+    - name: "updating resolv.conf gfile"
+      lineinfile:
+        path: /etc/resolv.conf
+        line: nameserver 10.1.2.200
+    - name: "running a script"
+      script: /some/loca/script.sh -arg1 -arg2

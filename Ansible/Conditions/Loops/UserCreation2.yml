@@ -1,0 +1,15 @@
+-
+  name: user creation with group ID
+  hosts: all
+  tasks:
+    - name: "Creating using with groupID"
+      user: name='{{item.name}}' uid='{{item.uid}}' state=present
+      loop:
+        - name: "shiva"
+          uid: "5000"
+        - name: "mukesh"
+          uid: "5001"
+        - name: "suresh"
+          uid: "5002"
+        - name: "Santosh"
+          uid: "5003"

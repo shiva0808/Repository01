@@ -1,0 +1,12 @@
+-
+  name: checking http service availability
+  hosts: web
+  tasks:
+    - command: service httpd status
+      register: result
+
+    - mail:
+        to: admin@alepo.com
+        subject: Service Alert
+        body: httpd service down
+        when: result.stdout.find('down')!=-1

@@ -1,0 +1,6 @@
+target1 ansible_host=192.168.1.114 ansible_ssh_pass=osboxes.org
+target2 ansible_host=192.168.1.115 ansible_ssh_pass-osboxes.org
+
+#test this by running below
+# ansible target1 -m ping -i inventory.txt
+# ansible target1 -m ping -i inventory.txt

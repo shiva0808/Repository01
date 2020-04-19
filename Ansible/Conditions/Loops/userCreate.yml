@@ -1,0 +1,16 @@
+-
+  name: user creation
+  hosts: all
+  tasks:
+    - name: user creation
+      user: name={{item}} state=present
+      loop:
+        - jeo
+        - amit
+        - suresh
+        - prakash
+#      with_items:          same as for
+#        - joe
+#        - amit
+#        - suresh
+#        - prakash

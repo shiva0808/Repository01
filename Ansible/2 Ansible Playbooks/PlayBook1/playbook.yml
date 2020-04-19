@@ -1,0 +1,20 @@
+-
+  name: play1
+  hosts: localhost
+  tasks:
+    - name: Execute command 'date'
+      command: date                         #command module
+    - name: Execute a script on server1
+      script: test_script.sh                #script module
+    - name: install httpd service
+      yum:                                  #yum module
+        name: httpd
+        state: present
+    - name: Start web server1
+      service:                              #service Module
+        name: httpd
+        state: started
+
+
+#run this playbook by
+#ansible-playbook playbook.yml -i <inventory file>

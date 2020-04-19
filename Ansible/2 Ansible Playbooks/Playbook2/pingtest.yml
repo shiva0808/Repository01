@@ -1,0 +1,11 @@
+-
+  name: ping test
+  host: all
+  tasks:
+    - name: ping test
+      ping:
+
+
+  #run this playbook using below command
+  #ansible-playbook pingtest.yml -i inventory.txt
+  

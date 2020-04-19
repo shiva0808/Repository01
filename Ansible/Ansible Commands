@@ -1,0 +1,16 @@
+There are two ways to run ansible command
+1. by ansible
+2. by ansible playbook
+
+Ansible:
+ansible <host> -a command
+ansbile all -a "/sbin/reboot" -i inventory.txt
+
+ansbile <hosts> -m <module>
+ansible target1 -m ping -i inventory.txt
+
+
+
+
+Ansible Playbook Commands
+ansible-playbook <playbook file> -i <inventory file>
