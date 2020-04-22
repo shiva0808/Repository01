@@ -1,0 +1,19 @@
+{
+  "logger": {
+    "title": "Remote Sync"
+  },
+  "uploadOnSave": true,
+  "useAtomicWrites": false,
+  "deleteLocal": false,
+  "ignore": [
+    ".remote-sync.json",
+    ".git/**"
+  ],
+  "watch": [],
+  "transport": "scp",
+  "port": "22",
+  "hostname": "192.168.43.153",
+  "target": "/home/CustomScripts",
+  "username": "root",
+  "password": "rootroot"
+}
