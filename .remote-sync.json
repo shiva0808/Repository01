@@ -12,7 +12,7 @@
   "watch": [],
   "transport": "scp",
   "port": "22",
-  "hostname": "192.168.43.153",
+  "hostname": "192.168.29.6",
   "target": "/home/CustomScripts",
   "username": "root",
   "password": "rootroot"
