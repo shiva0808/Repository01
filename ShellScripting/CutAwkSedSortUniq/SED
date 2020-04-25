@@ -1,0 +1,7 @@
+sed '/^#/d' <file>        this will remove line starting with #
+sed '/^$/d' <file>        This will remove empty line from file(^ start of line $ end of line)
+sed '/^#/d' ; '/$^/d'; 's/apache/tomcat' <File>    Combining multiple sed statement
+sed -e '/^#/d' -e '/$^/d'-e 's/apache/tomcat/' <File> Combining multiple sed statement
+sed '2 s/apache/tomcat/' <file>   this will substitute only line 2
+sed '/Group/ s/apache/tomcat/'    this will update apache to tomcat where line has Group
+sed '1,4 s/apache/tomcat/'    this will update apache to tomcat from line 1 to 4
