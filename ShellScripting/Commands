@@ -17,3 +17,7 @@ tar -czvf filename.tar.gz <directory>      making a tar.gz file directly
 gzip filename.tar                          gzip a tar file
 gunzip filename.tar                        Extracting a gzip file
 tar -zxvf filename.tar.gz                  extracting a tar.gz file
+============
+tee COMMAND
+echo "192.168.100.1 Server1" | sudo tee -a /etc/hosts
+============
