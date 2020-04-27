@@ -21,3 +21,8 @@ tar -zxvf filename.tar.gz                  extracting a tar.gz file
 tee COMMAND
 echo "192.168.100.1 Server1" | sudo tee -a /etc/hosts
 ============
+Firewall
+service stop firewalld
+systemctl stop firewalld
+
+systemctl disable firewalld
